@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Intro to NodeJS</title>
+  </head>
+  <body>
+    <p id="myId">1. Click Here</p>
+    <p id="otherId">2. Click Here</p>
+    <script src="main.js"></script>
+  </body>
+</html>
+<!--
+Describe the purpose of a server.
+- web page - document that can be displayed in a browser, written in HTML
+- website - collection of pages grouped together into a single resource, with
+            links connecting them together
+- web server - computer that hosts a website on the internet
+- hosting provider - service that will host my HTTP web server
+search engine - web service that helps me find other web pages
+- server - computer/software that stores software and files mean to be served 
+- hardware server - connects to the internet and supports data interchange with
+                    other devices connected to the web
+- software server - hosted files, and HTTP server
+- HTTP server - software that understands URLs(web addresses) and HTTP (protocol
+                my browser uses to view webpages), it's responsible for processing
+                and answering incoming requests
+                HTTP server can be accessed through the domain names of the websites
+                it stores, and it delivers the content of these websites to the 
+                end user's device
+Describe the differences between static and dynamic sites.
+static web server - computer with an HTTP server, the server sends its hosted files
+                    as is to my browser
+static websites - sites that return the same hard-coded content from the server 
+                  whenever a particular resource is requested
+static sites are good when the number of pages is small, and I want to send the same
+content to every user
+1. user navigates to a page, browser sets an HTTP GET request specifying the URL of 
+   its HTML page
+2. server retrieves the requested document from its file syst
+3. server returns an HTTP response containing the document and an HTTP Response status code
+- server for a static site will only ever need to process GET requests, bc the server
+  doesn't store any modifiable data, it doesn't change its responses based on HTTP request data
+- dynamic sites handle requests for static files the same way static sites handle those requests
+dynamic web server -  made up of a static web server, an app server, and a database
+                      dynamic because the app server updates the hosted files before
+                      sending content to my browser via the HTTP server
+                      ex. app server might fill an HTML template with content from a 
+                      database to produce the final webpage I see on a browser
+dynamic websites - sites composed of a few HTML templates and a giant database
+                   where some of the response content is generated dynamically
+                   HTML pages are created by inserting data from a database into 
+                   placeholders in HTML templates
+dynamic sites return different data for a URL based on info provided by the user or
+stored preferences
+parts of a site that make it dynamic: web application (server-side code that processes HTTP
+requests and returns HTTP responses), database, and HTML templates
+ex. sports-team manager website where a coach can select their team name and team size
+in an HTML form and get back a suggested best lineup for their next game
+1. my browser/client sends a request to the web server
+   when requesting a file via HTTP, client must provide the file's URL
+   ex. 
+2. web server searches for the request file in its storage space
+   HTTP server checks if the requested URL matches an existing file
+3. web server finds the file, reads it, processes it as needed, and sends it to the browser
+   or it checks if it should generate the file dynamically
+   web server must answer every HTTP request, at least with an error message
+Explain why you might need a back-end for your project.
+- for dynamic websites
+1. browser send HTTP request to the web server; the request includes:
+   a. a URL identifying the target server and resource
+      ex. an HTML file, a data point on the server, or a tool to run
+      ex. browser creates a request to the server using the base URL for the resource
+   b. a method defining the required action
+      ex. GET, POST, HEAD (get the metadata about a specific resource without getting the body),
+      TRACE, OPTIONS, CONNECT, PATCH 
+      ex. browser creates an HTTP GET request
+   c. additional info encoded with the request
+      ex. HTML form data
+      GET requests encode data in the URL by adding name/value pairs on the end (URL parameters)
+      GET requests can be changed and resubmitted, so they're not used for requests that update data
+      POST requests add new resources, the data for which is encoded in the request body
+      client-side cookies containing session data about the client, including keys that the 
+      server can use to determine their login status and permissions/accesses to resources
+      ex. browser encodes the team and player nymber either as URL parameters or as part of the URL pattern
+2. requests for dynamic resources are forwarded to server-side code, a web application
+   ex. web application processes the dynamic request
+   (wen server determines how to handle different URLs based on pattern matching rules defined in its config) 
+3. the web app interprets the dynamic request
+   the web app reads required information from a database 
+   ex. web app identifies the intention of the request to get the best team list based on the URL and
+   finds out the required team name and number of players from the URL
+   ex. web app gets the required info from the database, using internal parameters to define which players 
+   are best and possibly also getting the identity of the logged in coach from a client side cookie
+4. the server combines the retrieved data from the database with HTML templates
+   ex. web app dynamically creates an HTML page by putting the data from the database into placeholders 
+   inside an HTML template 
+5. it sends a response back to the server containing the generated HTML
+   and the HTTP response goes to the browser
+   response contains an HTTP Response status code:
+   - 200 OK
+   - 404 Not Found
+   - 403 Forbidden
+   response body to a successful GET request contains the requested resource
+   ex. 404 would indicate that the team doesn't exist
+6. as part of processing, the browser may discover links to other resources (JS or CSS files)
+   the browser will send separate HTTP requests to download these files
+   ex. browser processes the returned HTML, sending separate requests to get any other CSS
+   or JS file it references
+7. web server loads static files from the file system and returns them to the browser directly
+header - first part of the request containing useful info
+- type of request
+- target resource URL 
+- URL parameters, short string identifying the specific protocol version
+- target/host website
+- final line has info about client-side cookies
+  the cookie includes an id for managing sessions 
+- remaining lines has info about the browser used and the sort of responses it can handle
+GET /en-US/search?q=client+server+overview&topic=apps&topic=html&topic=css&topic=js&topic=api&topic=webdev HTTP/1.1
+Host: developer.mozilla.org
+Connection: keep-alive
+Pragma: no-cache
+Cache-Control: no-cache
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: https://developer.mozilla.org/en-US/
+Accept-Encoding: gzip, deflate, sdch, br
+Accept-Language: en-US,en;q=0.8,es;q=0.6
+Cookie: sessionid=6ynxs23n521lu21b1t136rhbv7ezngie; csrftoken=zIPUJsAZv6pcgCBJSCj1zU6pQZbfMUAT; dwf_section_edit=False; dwf_sg_task_completion=False; _gat=1; _ga=GA1.2.1688886003.1471911953; ffo=true
+
+web app receives HTTP requests and returns HTTP responses
+- interactd with a database to get or update info
+- sends an email to users to confirm their registration with the site
+- site may perform logging or other operations
+
+server-side website code can dynamically create and return other types of files: text, PDF, CSV, etc.
+or return data: JSON, XML, etc.
+response header has - 
+- response code
+- Content-Type, charset
+- how big the response is
+- at the end of the message, the body content
+- when the response was generated
+- the server
+- how the response expects the browser to handle page
+HTTP/1.1 200 OK
+Server: Apache
+X-Backend-Server: developer1.webapp.scl3.mozilla.com
+Vary: Accept, Cookie, Accept-Encoding
+Content-Type: text/html; charset=utf-8
+Date: Wed, 07 Sep 2016 00:11:31 GMT
+Keep-Alive: timeout=5, max=999
+Connection: Keep-Alive
+X-Frame-Options: DENY
+Allow: GET
+X-Cache-Info: caching
+Content-Length: 41823
+
+<!doctype html>
+<html lang="en-US" dir="ltr" class="redesign no-js" data-ffo-opensanslight=false data-ffo-opensans=false >
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script>(function(d) { d.className = d.className.replace(/\bno-js/, ''); })(document.documentElement);</script>
+  …
+
+POST request
+- made when a form is submitted containing info to be saved on the server
+- here, user submits new profile details on the site
+- main difference from GET request, is the URL doesn't have any parameters
+- info from the form is encoded in the request body
+POST /en-US/profiles/hamishwillee/edit HTTP/1.1
+Host: developer.mozilla.org
+Connection: keep-alive
+Content-Length: 432
+Pragma: no-cache
+Cache-Control: no-cache
+Origin: https://developer.mozilla.org
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: https://developer.mozilla.org/en-US/profiles/hamishwillee/edit
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.8,es;q=0.6
+Cookie: sessionid=6ynxs23n521lu21b1t136rhbv7ezngie; _gat=1; csrftoken=zIPUJsAZv6pcgCBJSCj1zU6pQZbfMUAT; dwf_section_edit=False; dwf_sg_task_completion=False; _ga=GA1.2.1688886003.1471911953; ffo=true
+
+csrfmiddlewaretoken=zIPUJsAZv6pcgCBJSCj1zU6pQZbfMUAT&user-username=hamishwillee&user-fullname=Hamish+Willee&user-title=&user-organization=&user-location=Australia&user-locale=en-US&user-timezone=Australia%2FMelbourne&user-irc_nickname=&user-interests=&user-expertise=&user-twitter_url=&user-stackoverflow_url=&user-linkedin_url=&user-mozillians_url=&user-facebook_url=
+
+POST response
+- 302 Found means the post succeeded
+- tells browser it must issue a second HTTP request to load the page specified in the Location field
+
+HTTP/1.1 302 FOUND
+Server: Apache
+X-Backend-Server: developer3.webapp.scl3.mozilla.com
+Vary: Cookie
+Vary: Accept-Encoding
+Content-Type: text/html; charset=utf-8
+Date: Wed, 07 Sep 2016 00:38:13 GMT
+Location: https://developer.mozilla.org/en-US/profiles/hamishwillee
+Keep-Alive: timeout=5, max=1000
+Connection: Keep-Alive
+X-Frame-Options: DENY
+X-Cache-Info: not cacheable; request wasn't a GET or HEAD
+Content-Length: 0
+
+
+- web server has to store the website's files: HTML documents and assets
+- why a dedicated web server is more convenient:
+1. it's typically more available
+2. it's always connected to the internet
+3. it can have the same IP address all the time
+4. it's typically maintained by a third party
+protocol - set of rules for communication between two computers
+HTTP - protocol that specifies how to transfer hypertext (linked web documents) between 2 computers
+       HTTP is textual and stateless (neither the server nor the client remembers previous communications)
+HTTP server can't remember a password that I typed or my progress on an incomplete transaction
+(application server is needed for tasks like that)
+Explain when you wouldn’t need a back-end for a project.
+- for static websites
+server-side programming involves choosing which content is returned to the browser in response to requests
+- server-side code validates submitted data and requests, uses databases to store and retrieve data,
+  sends the correct data to the client as required
+- server-side code has full access to the server operating system, and the dev can choose what language
+  and specific version they want to use
+web frameworks provide simple mechanisms to map URLs for different resources/pages to specific handler functions
+(keeps the code associated with each type of resource separate, and I can change the URL used to deliver a 
+particular feature in one place without having to change the handler function)
+# file: best/urls.py
+#
+
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    // HTTP request with a resource URL of /best will be passed to function named index()
+    # example: /best/
+    url(r'^$', views.index),
+    // HTTP request that has the pattern /best/junior will instead be passed to the junior() view function
+    # example: /best/junior/
+    url(r'^junior/$', views.junior),
+]
+the regex allow me to match patterns in the URL
+
+Explain the event loop.
+- JavaScript has a single-threaded event loop
+- the event loop looks at the call stack and looks at the task queue
+  if the call stack is empty, it takes the first thing on the task/callback queue and pushes it onto the stack
+  again, the event loop has to wait until the call stack is clear before it can push the callback onto the stack
+Understand the origin of the Node.js runtime.
+- Node.js allows me to run JavaScript code on a local computer or a server without having to
+  go through a web browser
+  Node.js rose out a desire to have JS be a language that could be run locally as a standalone application
+- Node.js, like JS, runs on the v8 JavaScript runtime engine, taking my JS code and converts it into a
+  faster machine code
+- server can handle multiple requests at the same time, so non-blocking requests can be made
+  using a non-blocking request, I can initiate a request without waiting the response to a different request
+  I can initiate requests in parallel
+- JS does not block execution but schedules async tasks for later
+- JavaScript is singly-threaded, it executes one task at a time within a single thread
+  no true parallel execution, task switching is required, concurrency is achieved through async programming (event loop)
+- Node module - resuable block of code whose existence does not accidentally impact other code
+Write a basic “hello world” application and run it in the console of your machine.
+Understand what Node.js really is.  
+-->
