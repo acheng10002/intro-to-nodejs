@@ -208,4 +208,29 @@ reqForPost.write(data);
 // sends the request to the server
 reqForPost.end();
 
-/* PUT and DELETE requests use the same POST request format, options.method gets changed */
+// PUT and DELETE requests use the same POST request format, options.method gets changed
+
+/* http.createServer - this method creates an HTTP server that accepts handlers that will 
+                    be executed every time I get a request */
+// built-in Node.js module used to create a secure HTTPS server
+const https = require("node:https");
+// built-in Node.js module used to read SSL/TLS certificate files
+/* SSL/TLS certificate files - digital files used to encrypt and secure data sent between
+                               a server and clients (browsers, APIs) 
+                               enable HTTPS by encrypting data using SSL/TLS protocols 
+                               and verifying the server's identity 
+(Secure Sockets Layer/Transport Layer Security - cryptographic protocols used to secure
+                                                 internet communications */
+const fs = require("node:fs");
+
+const optionsForCreateServer = {
+  key: fs.readFileSync("private-key.pem"),
+  cert: fs.readFileSync("certificate.pem"),
+};
+
+https
+  .createServer(optionsForCreateServer, (req, res) => {
+    res.writeHead(200);
+    res.end("hello world\n");
+  })
+  .listen(8000);
